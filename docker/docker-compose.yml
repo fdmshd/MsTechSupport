@@ -1,0 +1,55 @@
+version:  '3.7'
+
+services:
+  php_tech_support:
+    container_name: php_tech_support
+    build: dockerfile/php
+    restart: on-failure
+    expose:
+      - "9000"
+    volumes:
+      - ../app:/var/www/html
+      - ../app/vendor:/var/www/html/vendor
+    links:
+      - mysql_tech_support
+
+  nginx_tech_support:
+    container_name: nginx_tech_support
+    image: nginx:latest
+    restart: on-failure
+    ports:
+      - "8000:80"
+    volumes:
+      - ../app:/var/www/html
+      - ./logs/nginx:/var/log/nginx
+      - ./config/nginx:/etc/nginx/conf.d
+    links:
+      - php_tech_support
+
+  mysql_tech_support:
+    container_name: mysql_tech_support
+    image: mysql:5.7
+    restart: on-failure
+#    ports:
+#      - "3300:3306"
+    expose:
+      - "3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_PASSWORD: ${DATABASE_PASSWORD}
+      MYSQL_USER: ${DATABASE_USER}
+    volumes:
+      - ./db/tech_support:/var/lib/mysql
+
+  tech_support_storage:
+    container_name: tech_support_storage
+    image: motiv-eshop/app:latest
+    build: dockerfile/php
+    depends_on:
+      - mysql_tech_support
+    volumes:
+      - ../app:/var/www/html
+      - ../app/vendor:/var/www/html/vendor
+    restart: on-failure
+    command: [ "php", "bin/console"]
