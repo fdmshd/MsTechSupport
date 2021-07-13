@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @method Category|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,6 +20,15 @@ class CategoryRepository extends ServiceEntityRepository
         parent::__construct($registry, Category::class);
     }
 
+    public function findCategories($page, $limit, $order)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->orderBy('c.name', $order);
+        $query->setMaxResults($limit);
+        $query->setFirstResult(($limit * $page) - $limit);
+
+        return new Paginator($query);
+    }
     // /**
     //  * @return Category[] Returns an array of Category objects
     //  */

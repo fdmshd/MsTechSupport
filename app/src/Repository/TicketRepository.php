@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Ticket;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * @method Ticket|null find($id, $lockMode = null, $lockVersion = null)
@@ -19,6 +20,15 @@ class TicketRepository extends ServiceEntityRepository
         parent::__construct($registry, Ticket::class);
     }
 
+    public function findTickets($page, $limit, $order, $orderBy)
+    {
+        $query = $this->createQueryBuilder('c');
+        $query->orderBy('c.date', $order);
+        $query->setMaxResults($limit);
+        $query->setFirstResult(($limit * $page) - $limit);
+
+        return new Paginator($query);
+    }
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects
     //  */
