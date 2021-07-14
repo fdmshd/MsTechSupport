@@ -46,7 +46,7 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route("/categories/", name="create_category",requirements={"id"="\d+"},methods={"POST"})
+     * @Route("/categories", name="create_category",requirements={"id"="\d+"},methods={"POST"})
      */
     public function createCategory(ValidatorInterface $validator,Request $request):Response
     {
@@ -96,7 +96,7 @@ class CategoryController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $category = $this->getDoctrine()
-            ->getRepository(Comment::class)
+            ->getRepository(Category::class)
             ->find($id);
         $user = $this->getUser();
         if ($user instanceof User and $user->getId() !== $category->getUserId()) {

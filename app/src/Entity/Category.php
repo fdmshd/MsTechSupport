@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\CategoryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -16,18 +17,16 @@ class Category
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ("main")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ("main")
      */
     private $name;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Ticket::class, mappedBy="category")
-     */
-    private $tickets;
 
     public function __construct()
     {
@@ -51,33 +50,4 @@ class Category
         return $this;
     }
 
-    /**
-     * @return Collection|Ticket[]
-     */
-    public function getTickets(): Collection
-    {
-        return $this->tickets;
-    }
-
-    public function addTicket(Ticket $ticket): self
-    {
-        if (!$this->tickets->contains($ticket)) {
-            $this->tickets[] = $ticket;
-            $ticket->setCategory($this);
-        }
-
-        return $this;
-    }
-
-    public function removeTicket(Ticket $ticket): self
-    {
-        if ($this->tickets->removeElement($ticket)) {
-            // set the owning side to null (unless already changed)
-            if ($ticket->getCategory() === $this) {
-                $ticket->setCategory(null);
-            }
-        }
-
-        return $this;
-    }
 }

@@ -1,22 +1,22 @@
 <?php return array(
     'root' => array(
-        'pretty_version' => 'dev-master',
-        'version' => 'dev-master',
+        'pretty_version' => '1.0.0+no-version-set',
+        'version' => '1.0.0.0',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
-        'reference' => '4a7fbfc299576c5e179a3a87c9d32c6e7592da89',
+        'reference' => NULL,
         'name' => '__root__',
         'dev' => true,
     ),
     'versions' => array(
         '__root__' => array(
-            'pretty_version' => 'dev-master',
-            'version' => 'dev-master',
+            'pretty_version' => '1.0.0+no-version-set',
+            'version' => '1.0.0.0',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
-            'reference' => '4a7fbfc299576c5e179a3a87c9d32c6e7592da89',
+            'reference' => NULL,
             'dev_requirement' => false,
         ),
         'composer/package-versions-deprecated' => array(
@@ -638,6 +638,15 @@
             'install_path' => __DIR__ . '/../symfony/security-http',
             'aliases' => array(),
             'reference' => '81c183fd1527a2d09bd3b5c69bca3fc24ce18527',
+            'dev_requirement' => false,
+        ),
+        'symfony/serializer' => array(
+            'pretty_version' => 'v5.3.2',
+            'version' => '5.3.2.0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/serializer',
+            'aliases' => array(),
+            'reference' => '96f6ff6582d1bf1bf08281b563a6c7c917efe6c1',
             'dev_requirement' => false,
         ),
         'symfony/service-contracts' => array(
