@@ -18,6 +18,7 @@ class CategoryController extends AbstractController
 {
     /**
      * @Route("/categories", name="categories", methods = {"GET"})
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function getCategories(CategoryRepository $categoryRepository, Request $request): Response
     {
@@ -35,6 +36,7 @@ class CategoryController extends AbstractController
 
     /**
      * @Route("/categories/{id}", name="get_category",requirements={"id"="\d+"},methods={"GET"})
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function getCategory($id): Response
     {
@@ -47,6 +49,7 @@ class CategoryController extends AbstractController
 
     /**
      * @Route("/categories", name="create_category",requirements={"id"="\d+"},methods={"POST"})
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function createCategory(ValidatorInterface $validator,Request $request):Response
     {
@@ -65,7 +68,7 @@ class CategoryController extends AbstractController
     }
     /**
      * @Route("/categories/{id}", name="update_category",requirements={"id"="\d+"},methods={"PUT"})
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function updateCategory(Request $request, ValidatorInterface $validator,$id):Response
     {
@@ -73,10 +76,6 @@ class CategoryController extends AbstractController
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
             ->find($id);
-        $user = $this->getUser();
-        if ($user instanceof User and $user->getId() !== $category->getUserId()) {
-            $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        }
         $decoded_request = json_decode($request->getContent());
         $category->setName($decoded_request->name);
         $errors = $validator->validate($category);
@@ -89,7 +88,7 @@ class CategoryController extends AbstractController
     }
     /**
      * @Route("/categories/{id}", name="delete_category",requirements={"id"="\d+"},methods={"DELETE"})
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function deleteCategory(Request $request,$id):Response
     {
@@ -97,15 +96,11 @@ class CategoryController extends AbstractController
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
             ->find($id);
-        $user = $this->getUser();
-        if ($user instanceof User and $user->getId() !== $category->getUserId()) {
-            $this->denyAccessUnlessGranted('ROLE_ADMIN');
-        }
         if ($category) {
             $entityManager->remove($category);
             $entityManager->flush();
         }
-        return new Response($this->json(['message' => 'Content successfully removed']), 200);
+        return new Response($this->json(['message' => 'Category successfully removed']), 200);
     }
 
 
