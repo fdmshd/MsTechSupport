@@ -82,7 +82,7 @@ class Ticket
      * @ORM\Column(type="text", nullable=true)
      * @Groups ("main")
      */
-    private $Response;
+    private $response;
 
     public function getId(): ?int
     {
@@ -187,12 +187,12 @@ class Ticket
 
     public function getResponse(): ?string
     {
-        return $this->Response;
+        return $this->response;
     }
 
-    public function setResponse(?string $Response): self
+    public function setResponse(?string $response): self
     {
-        $this->Response = $Response;
+        $this->response = $response;
 
         return $this;
     }

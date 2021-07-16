@@ -104,7 +104,7 @@ class TicketController extends AbstractController
             ->find($id);
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
-            ->findOneBy($request_data->category);
+            ->findOneBy(array('name'=>$request_data->category));
         if (!$category) {
             $categories = $this->getDoctrine()
                 ->getRepository(Category::class)
@@ -112,8 +112,8 @@ class TicketController extends AbstractController
             return new Response($this->json(['message' => 'wrong category',
                 'existing categories' => $categories]), 400);
         }
-
         $ticket->setCategory($category);
+        $ticket->setUrgency($request_data->urgency);
         $ticket->setResponse($request_data->response);
         $errors = $validator->validate($ticket);
         if (count($errors) > 0) {
@@ -126,7 +126,7 @@ class TicketController extends AbstractController
 
     /**
      * @Route("/tickets/{id}", name="delete_ticket",requirements={"id"="\d+"},methods={"DELETE"})
-     * @IsGranted("ROLE_USER")
+     * @IsGranted("ROLE_SUPPORT")
      */
     public function deleteTicket($id): Response
     {
@@ -142,5 +142,6 @@ class TicketController extends AbstractController
             $entityManager->remove($ticket);
             $entityManager->flush();
         }
+        return new Response($this->json(['message' => 'Ticket successfully removed']), 200);
     }
 }

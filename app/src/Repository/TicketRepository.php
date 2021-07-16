@@ -24,7 +24,11 @@ class TicketRepository extends ServiceEntityRepository
     {
 
         $query = $this->createQueryBuilder('t');
-        if($user->getRole()=='ROLE_USER')
+        $roles=$user->getRoles();
+        $roleSupportStr = "ROLE_SUPPORT";
+        $roleAdminStr = "ROLE_ADMIN";
+        $roleSuperAdminStr = "ROLE_SUPER_ADMIN";
+        if(!(in_array($roleSupportStr,$roles)||in_array($roleAdminStr,$roles)||in_array($roleSuperAdminStr,$roles)))
         {
             $query->where('t.user_id=:user_id')->setParameter('user_id',$user->getId());
         }
