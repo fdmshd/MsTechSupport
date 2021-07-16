@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Ticket;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
@@ -22,13 +23,9 @@ class TicketRepository extends ServiceEntityRepository
 
     public function findTickets($page, $limit, $order, $orderBy,$user)
     {
-
         $query = $this->createQueryBuilder('t');
-        $roles=$user->getRoles();
-        $roleSupportStr = "ROLE_SUPPORT";
-        $roleAdminStr = "ROLE_ADMIN";
-        $roleSuperAdminStr = "ROLE_SUPER_ADMIN";
-        if(!(in_array($roleSupportStr,$roles)||in_array($roleAdminStr,$roles)||in_array($roleSuperAdminStr,$roles)))
+
+        if($this->canUserGetOtherTickets($user))
         {
             $query->where('t.user_id=:user_id')->setParameter('user_id',$user->getId());
         }
@@ -37,6 +34,19 @@ class TicketRepository extends ServiceEntityRepository
         $query->setFirstResult(($limit * $page) - $limit);
 
         return new Paginator($query);
+    }
+
+    private function canUserGetOtherTickets($user):bool
+    {
+        $roles=$user->getRoles();
+        $roleSupportStr = "ROLE_SUPPORT";
+        $roleAdminStr = "ROLE_ADMIN";
+        $roleSuperAdminStr = "ROLE_SUPER_ADMIN";
+        if(!(in_array($roleSupportStr,$roles)||in_array($roleAdminStr,$roles)||in_array($roleSuperAdminStr,$roles)))
+        {
+            return true;
+        }
+        return false;
     }
     // /**
     //  * @return Ticket[] Returns an array of Ticket objects

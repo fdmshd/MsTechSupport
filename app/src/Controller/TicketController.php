@@ -47,6 +47,10 @@ class TicketController extends AbstractController
         $ticket = $this->getDoctrine()
             ->getRepository(Ticket::class)
             ->find($id);
+        $user = $this->getUser();
+        if ($user instanceof User and $user->getId() !== $ticket->getUserId()) {
+            $this->denyAccessUnlessGranted('ROLE_SUPPORT');
+        }
         $data = (new NormalizeService())->normalizeByGroup($ticket);
         return new Response($this->json($data), 200);
     }
