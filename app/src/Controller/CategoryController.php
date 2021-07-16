@@ -78,7 +78,6 @@ class CategoryController extends AbstractController
             $this->denyAccessUnlessGranted('ROLE_ADMIN');
         }
         $decoded_request = json_decode($request->getContent());
-
         $category->setName($decoded_request->name);
         $errors = $validator->validate($category);
         if (count($errors) > 0) {

@@ -3,3 +3,6 @@
 /docker/logs/
 /docker/db/
 /docker/.env
+app/public/bundles/
+app/var/
+app/vendor/

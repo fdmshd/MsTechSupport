@@ -20,10 +20,15 @@ class TicketRepository extends ServiceEntityRepository
         parent::__construct($registry, Ticket::class);
     }
 
-    public function findTickets($page, $limit, $order, $orderBy)
+    public function findTickets($page, $limit, $order, $orderBy,$user)
     {
-        $query = $this->createQueryBuilder('c');
-        $query->orderBy('c.date', $order);
+
+        $query = $this->createQueryBuilder('t');
+        if($user->getRole()=='ROLE_USER')
+        {
+            $query->where('t.user_id=:user_id')->setParameter('user_id',$user->getId());
+        }
+        $query->orderBy('t.'.$orderBy, $order);
         $query->setMaxResults($limit);
         $query->setFirstResult(($limit * $page) - $limit);
 
