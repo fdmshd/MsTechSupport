@@ -31,7 +31,7 @@ class CategoryController extends AbstractController
         }
         $categories = $categoryRepository->findCategories($page, $limit, $order);
 
-        return new Response($this->json($categories), 200);
+        return new Response($this->json(['data'=>$categories]), 200);
     }
 
     /**
@@ -44,7 +44,7 @@ class CategoryController extends AbstractController
         $category = $this->getDoctrine()
             ->getRepository(Category::class)
             ->find($id);
-        return new Response($this->json($category), 200);
+        return new Response($this->json(['data'=>$category]), 200);
     }
 
     /**
@@ -63,7 +63,8 @@ class CategoryController extends AbstractController
         } else {
             $entityManager->persist($category);
             $entityManager->flush();
-            return new Response($this->json($category), 201);
+            return new Response($this->json(['data'=>$category,
+                'message'=>'category successfully created']), 201);
         }
     }
     /**
@@ -80,10 +81,11 @@ class CategoryController extends AbstractController
         $category->setName($decoded_request->name);
         $errors = $validator->validate($category);
         if (count($errors) > 0) {
-            return new Response($this->json(['errors' => $errors]), 400);
+            return new Response($this->json(['message' => $errors]), 400);
         } else {
             $entityManager->flush();
-            return new Response($this->json($category), 200);
+            return new Response($this->json(['data'=>$category,
+                'message'=>'category successfully updated']), 200);
         }
     }
     /**

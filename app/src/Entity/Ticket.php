@@ -73,12 +73,6 @@ class Ticket
     }
 
     /**
-     * @ORM\Column(type="string", length=255)
-     * @Groups ("main")
-     */
-    private $user_name;
-
-    /**
      * @ORM\Column(type="text", nullable=true)
      * @Groups ("main")
      */
@@ -169,18 +163,6 @@ class Ticket
     public function setUrgency(string $urgency): self
     {
         $this->urgency = $urgency;
-
-        return $this;
-    }
-
-    public function getUserName(): ?string
-    {
-        return $this->user_name;
-    }
-
-    public function setUserName(string $user_name): self
-    {
-        $this->user_name = $user_name;
 
         return $this;
     }

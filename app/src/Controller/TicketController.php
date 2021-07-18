@@ -35,7 +35,7 @@ class TicketController extends AbstractController
         $tickets = $ticketRepository->findTickets($page, $limit, $order, $orderBy, $user);
         $data = (new NormalizeService())->normalizeByGroup($tickets);
 
-        return new Response($this->json($data), 200);
+        return new Response($this->json(['data'=>$data]), 200);
     }
 
     /**
@@ -52,7 +52,7 @@ class TicketController extends AbstractController
             $this->denyAccessUnlessGranted('ROLE_SUPPORT');
         }
         $data = (new NormalizeService())->normalizeByGroup($ticket);
-        return new Response($this->json($data), 200);
+        return new Response($this->json(['data'=>$data]), 200);
     }
 
     /**
@@ -69,7 +69,6 @@ class TicketController extends AbstractController
         $ticket->setSubject($request->request->get('subject'));
         $ticket->setFile($request->request->get('file'));
         $ticket->setUserId($user->getId());
-        $ticket->setUserName($user->getUsername());
         $ticket->setUrgency($request->request->get('urgency'));
         $category_name = $request->request->get('category');
         $category = $this->getDoctrine()
@@ -86,11 +85,13 @@ class TicketController extends AbstractController
 
         $errors = $validator->validate($ticket);
         if (count($errors) > 0) {
-            return new Response((string)$errors, 400);
+            return new Response( $this->json(['message'=>$errors]), 400);
         } else {
             $entityManager->persist($ticket);
             $entityManager->flush();
-            return new Response($this->json($ticket), 201);
+            $data = (new NormalizeService())->normalizeByGroup($ticket);
+            return new Response($this->json(['data'=>$data,
+                'message'=>'ticket successfully created']), 201);
         }
 
     }
@@ -121,10 +122,12 @@ class TicketController extends AbstractController
         $ticket->setResponse($request_data->response);
         $errors = $validator->validate($ticket);
         if (count($errors) > 0) {
-            return new Response($this->json(['errors' => $errors]), 400);
+            return new Response($this->json(['message' => $errors]), 400);
         } else {
             $entityManager->flush();
-            return new Response($this->json($ticket), 200);
+            $data = (new NormalizeService())->normalizeByGroup($ticket);
+            return new Response($this->json(['data'=>$data,
+                'message'=>'ticket successfully updated']), 200);
         }
     }
 
